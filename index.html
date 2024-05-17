@@ -5,40 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logical Argument Form</title>
     <style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         .container {
-            width: 50%;
-            margin: auto;
+            max-width: 800px;
+            margin: 20px auto;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #fff;
         }
+
         .input-group {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
-        .input-group select, .input-group input {
-            margin-right: 10px;
+
+        .input-group input, .input-group select, .input-group button {
+            margin: 5px;
+            padding: 10px;
+            flex: 1 1 auto;
+            min-width: 100px;
         }
+
         .input-group button {
-            margin-left: 10px;
+            flex: 0 0 auto;
         }
+
         #result {
             margin-top: 20px;
             border-top: 1px solid #ccc;
             padding-top: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            table-layout: fixed;
+            word-wrap: break-word;
         }
+
         table, th, td {
             border: 1px solid black;
         }
+
         th, td {
             padding: 8px;
             text-align: left;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+
+            th, td {
+                font-size: 12px;
+                padding: 6px;
+            }
         }
     </style>
 </head>
@@ -121,7 +155,7 @@
                 // Remove the comma before "therefore"
                 let argument = propositions.join(', ');
                 argument = argument.replace(', therefore', ' therefore');
-                fetch('http:localhost:5000/evaluate', {
+                fetch('http://localhost:5000/evaluate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
