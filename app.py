@@ -57,7 +57,7 @@ def build_sympy_expr(expr_str, symbols_dict):
 
 def parse_input(argument_str):
     # Define the symbols
-    symbols_dict = {symbol: sp.Symbol(symbol) for symbol in 'P Q R S T U V W X Y Z'.split()}
+    symbols_dict = {symbol: sp.Symbol(symbol) for symbol in 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'.split()}
     
     # Split the input into premises and conclusion
     parts = argument_str.split('therefore')
@@ -83,7 +83,7 @@ def generate_truth_table(expressions):
     table = []
     for values in truth_values:
         valuation = dict(zip(symbols, values))
-        row = [valuation[sym] for sym in symbols] + [expr.subs(valuation) for expr in expressions]
+        row = [1 if valuation[sym] else 0 for sym in symbols] + [1 if expr.subs(valuation) else 0 for expr in expressions]
         table.append(row)
 
     return table, symbols
@@ -102,9 +102,12 @@ def is_valid_argument(expressions):
     for values in truth_values:
         valuation = dict(zip(symbols, values))
         if all(premise.subs(valuation) for premise in premises) and not conclusion.subs(valuation):
-            return False, valuation
+            # Convert True/False to 1/0 in counterexample
+            counter_example = {str(sym): 1 if val else 0 for sym, val in valuation.items()}
+            return False, counter_example
 
     return True, None
+
 
 
 def format_truth_table(table, symbols, expressions):

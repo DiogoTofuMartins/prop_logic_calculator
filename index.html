@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logical Argument Form</title>
+    <title>Logical Argument Evaluator</title>
     <style>
-       body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -29,7 +29,7 @@
             flex-wrap: wrap;
         }
 
-        .input-group input, .input-group select, .input-group button {
+        .input-group input {
             margin: 5px;
             padding: 10px;
             flex: 1 1 auto;
@@ -37,6 +37,8 @@
         }
 
         .input-group button {
+            margin: 5px;
+            padding: 10px;
             flex: 0 0 auto;
         }
 
@@ -44,6 +46,19 @@
             margin-top: 20px;
             border-top: 1px solid #ccc;
             padding-top: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .button-group button {
+            margin: 5px;
+            padding: 10px;
+            flex: 1 1 auto;
+            min-width: 50px;
         }
 
         table {
@@ -82,67 +97,103 @@
         <div id="propositions">
             <div class="input-group">
                 <input type="text" placeholder="Proposition" class="proposition">
-                <select class="operator">
-                    <option value="">--Select--</option>
-                    <option value="=>">⇒ (implies)</option>
-                    <option value="<=>">⇔ (biconditional)</option>
-                    <option value="∧">∧ (and)</option>
-                    <option value="∨">∨ (or)</option>
-                    <option value="¬">¬ (not)</option>
-                    <option value="⊕">⊕ (exclusive or)</option>
-                </select>
-                <input type="text" placeholder="Proposition" class="proposition">
                 <button type="button" onclick="addProposition(this)">+</button>
+                <button type="button" onclick="removeProposition(this)">-</button>
             </div>
         </div>
         <div class="input-group">
             <label for="conclusion">Therefore</label>
             <input type="text" id="conclusion" placeholder="Conclusion">
         </div>
+        <div class="button-group">
+            <button type="button" onclick="insertSymbol('A')">A</button>
+            <button type="button" onclick="insertSymbol('B')">B</button>
+            <button type="button" onclick="insertSymbol('C')">C</button>
+            <button type="button" onclick="insertSymbol('D')">D</button>
+            <button type="button" onclick="insertSymbol('E')">E</button>
+            <button type="button" onclick="insertSymbol('F')">F</button>
+            <button type="button" onclick="insertSymbol('G')">G</button>
+            <button type="button" onclick="insertSymbol('H')">H</button>
+            <button type="button" onclick="insertSymbol('I')">I</button>
+            <button type="button" onclick="insertSymbol('J')">J</button>
+            <button type="button" onclick="insertSymbol('K')">K</button>
+            <button type="button" onclick="insertSymbol('L')">L</button>
+            <button type="button" onclick="insertSymbol('M')">M</button>
+            <button type="button" onclick="insertSymbol('N')">N</button>
+            <button type="button" onclick="insertSymbol('O')">O</button>
+            <button type="button" onclick="insertSymbol('P')">P</button>
+            <button type="button" onclick="insertSymbol('Q')">Q</button>
+            <button type="button" onclick="insertSymbol('R')">R</button>
+            <button type="button" onclick="insertSymbol('S')">S</button>
+            <button type="button" onclick="insertSymbol('T')">T</button>
+            <button type="button" onclick="insertSymbol('U')">U</button>
+            <button type="button" onclick="insertSymbol('V')">V</button>
+            <button type="button" onclick="insertSymbol('W')">W</button>
+            <button type="button" onclick="insertSymbol('X')">X</button>
+            <button type="button" onclick="insertSymbol('Y')">Y</button>
+            <button type="button" onclick="insertSymbol('Z')">Z</button>
+            <button type="button" onclick="insertSymbol('∧')">∧</button>
+            <button type="button" onclick="insertSymbol('∨')">∨</button>
+            <button type="button" onclick="insertSymbol('¬')">¬</button>
+            <button type="button" onclick="insertSymbol('⊕')">⊕</button>
+            <button type="button" onclick="insertSymbol('=>')">⇒</button>
+            <button type="button" onclick="insertSymbol('<=>')">⇔</button>
+        </div>
         <button type="button" onclick="submitPropositions()">Submit</button>
         <div id="result"></div>
     </div>
 
     <script>
+        let lastFocusedElement = null;
+
+        document.addEventListener('focusin', (event) => {
+            if (event.target.classList.contains('proposition') || event.target.id === 'conclusion') {
+                lastFocusedElement = event.target;
+            }
+        });
+
         function addProposition(button) {
             const newGroup = document.createElement('div');
             newGroup.className = 'input-group';
             newGroup.innerHTML = `
                 <input type="text" placeholder="Proposition" class="proposition">
-                <select class="operator">
-                    <option value="">--Select--</option>
-                    <option value="=>">⇒ (implies)</option>
-                    <option value="<=>">⇔ (biconditional)</option>
-                    <option value="∧">∧ (and)</option>
-                    <option value="∨">∨ (or)</option>
-                    <option value="¬">¬ (not)</option>
-                    <option value="⊕">⊕ (exclusive or)</option>
-                </select>
-                <input type="text" placeholder="Proposition" class="proposition">
                 <button type="button" onclick="addProposition(this)">+</button>
+                <button type="button" onclick="removeProposition(this)">-</button>
             `;
             button.parentElement.insertAdjacentElement('afterend', newGroup);
+        }
+
+        function removeProposition(button) {
+            const group = button.parentElement;
+            if (document.querySelectorAll('.input-group').length > 1) {
+                group.remove();
+            } else {
+                alert('You must have at least one proposition.');
+            }
+        }
+
+        function insertSymbol(symbol) {
+            if (lastFocusedElement) {
+                const start = lastFocusedElement.selectionStart;
+                const end = lastFocusedElement.selectionEnd;
+                const value = lastFocusedElement.value;
+                lastFocusedElement.value = value.slice(0, start) + symbol + value.slice(end);
+                lastFocusedElement.selectionStart = lastFocusedElement.selectionEnd = start + symbol.length;
+                lastFocusedElement.focus();
+            }
         }
 
         function submitPropositions() {
             const inputGroups = document.querySelectorAll('.input-group');
             let propositions = [];
             inputGroups.forEach(group => {
-                
-
-                const propositionsInputs = group.querySelectorAll('.proposition');
-                if (propositionsInputs.length < 2) {
+                const propositionInput = group.querySelector('.proposition');
+                if (!propositionInput) {
                     return;
                 }
-                const operatorElement = group.querySelector('.operator');
-                const proposition1 = propositionsInputs[0].value.trim();
-                const operator = operatorElement ? operatorElement.value : '';
-                const proposition2 = propositionsInputs[1] ? propositionsInputs[1].value.trim() : '';
-
-                if (proposition1 && operator && proposition2) {
-                    propositions.push(`${proposition1}${operator}${proposition2}`);
-                } else if (proposition1 && !operator && !proposition2) {
-                    propositions.push(proposition1);
+                const proposition = propositionInput.value.trim();
+                if (proposition) {
+                    propositions.push(proposition);
                 }
             });
 
@@ -155,7 +206,7 @@
                 // Remove the comma before "therefore"
                 let argument = propositions.join(', ');
                 argument = argument.replace(', therefore', ' therefore');
-                fetch('http://localhost:5000/evaluate', {
+                fetch('http://localhost:5000/evaluate', { // Replace with your actual API endpoint
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -171,7 +222,10 @@
                         resultDiv.innerHTML += tableHtml;
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please check the console for details.');
+                });
             } else {
                 alert('Please enter a valid argument with at least one proposition and a conclusion.');
             }
