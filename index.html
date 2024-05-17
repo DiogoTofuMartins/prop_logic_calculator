@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logical Argument Form</title>
+    <style>
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .input-group select, .input-group input {
+            margin-right: 10px;
+        }
+        .input-group button {
+            margin-left: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Input Propositions</h1>
+        <div id="propositions">
+            <div class="input-group">
+                <input type="text" placeholder="Proposition" class="proposition">
+                <select class="operator">
+                    <option value="">--Select--</option>
+                    <option value="=>">⇒ (implies)</option>
+                    <option value="<=>">⇔ (biconditional)</option>
+                    <option value="∧">∧ (and)</option>
+                    <option value="∨">∨ (or)</option>
+                    <option value="¬">¬ (not)</option>
+                    <option value="⊕">⊕ (exclusive or)</option>
+                </select>
+                <input type="text" placeholder="Proposition" class="proposition">
+                <button type="button" onclick="addProposition(this)">+</button>
+            </div>
+        </div>
+        <div class="input-group">
+            <label for="conclusion">Therefore</label>
+            <input type="text" id="conclusion" placeholder="Conclusion">
+        </div>
+        <button type="button" onclick="submitPropositions()">Submit</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function addProposition(button) {
+            const newGroup = document.createElement('div');
+            newGroup.className = 'input-group';
+            newGroup.innerHTML = `
+                <input type="text" placeholder="Proposition" class="proposition">
+                <select class="operator">
+                    <option value="">--Select--</option>
+                    <option value="=>">⇒ (implies)</option>
+                    <option value="<=>">⇔ (biconditional)</option>
+                    <option value="∧">∧ (and)</option>
+                    <option value="∨">∨ (or)</option>
+                    <option value="¬">¬ (not)</option>
+                    <option value="⊕">⊕ (exclusive or)</option>
+                </select>
+                <input type="text" placeholder="Proposition" class="proposition">
+                <button type="button" onclick="addProposition(this)">+</button>
+            `;
+            button.parentElement.insertAdjacentElement('afterend', newGroup);
+        }
+
+        function submitPropositions() {
+            const inputGroups = document.querySelectorAll('.input-group');
+            let propositions = [];
+            inputGroups.forEach(group => {
+                
+
+                const propositionsInputs = group.querySelectorAll('.proposition');
+                if (propositionsInputs.length < 2) {
+                    return;
+                }
+                const operatorElement = group.querySelector('.operator');
+                const proposition1 = propositionsInputs[0].value.trim();
+                const operator = operatorElement ? operatorElement.value : '';
+                const proposition2 = propositionsInputs[1] ? propositionsInputs[1].value.trim() : '';
+
+                if (proposition1 && operator && proposition2) {
+                    propositions.push(`${proposition1}${operator}${proposition2}`);
+                } else if (proposition1 && !operator && !proposition2) {
+                    propositions.push(proposition1);
+                }
+            });
+
+            const conclusion = document.getElementById('conclusion').value.trim();
+            if (conclusion) {
+                propositions.push(`therefore ${conclusion}`);
+            }
+
+            if (propositions.length > 1) {
+                // Remove the comma before "therefore"
+                let argument = propositions.join(', ');
+                argument = argument.replace(', therefore', ' therefore');
+                fetch('http:localhost:5000/evaluate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ argument }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = `<p>${data.message}</p>`;
+                    if (data.truthTable) {
+                        const tableHtml = generateTableHtml(data.truthTable);
+                        resultDiv.innerHTML += tableHtml;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert('Please enter a valid argument with at least one proposition and a conclusion.');
+            }
+        }
+
+        function generateTableHtml(truthTable) {
+            let html = '<table><thead><tr>';
+            truthTable.header.forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            truthTable.rows.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${cell}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            return html;
+        }
+    </script>
+</body>
+</html>
