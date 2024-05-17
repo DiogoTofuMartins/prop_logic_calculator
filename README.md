@@ -126,7 +126,8 @@ fetch('YOUR_API_GATEWAY_URL/evaluate', {
 ### Results:
 1. **View Results**: The application will display the truth table and indicate whether the argument is valid or not.
 
-![image](https://github.com/DiogoTofuMartins/prop_logic_calculator/assets/72625639/295be64f-0022-4e75-8018-3e7c07efc562)
+![image](https://github.com/DiogoTofuMartins/prop_logic_calculator/assets/72625639/017ad4a4-0ecd-454d-a1af-39e87acc279b)
+
 
 ## Contributing
 
