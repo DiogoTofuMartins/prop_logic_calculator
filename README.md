@@ -17,7 +17,6 @@ These instructions will get you a copy of the project up and running on your loc
 
 - Python 3.8 or later
 - pip (Python package installer)
-- Node.js and npm (Node package manager) for local development
 
 ### Installing
 
@@ -54,10 +53,10 @@ These instructions will get you a copy of the project up and running on your loc
     Open `index.html` in a web browser or use a simple HTTP server:
 
     ```sh
-    npx http-server .
+    python -m http.server
     ```
 
-    The frontend should now be accessible, and it will communicate with the Flask backend running on `http://127.0.0.1:5000/`.
+    The frontend should now be accessible, and it will be running on `http://127.0.0.1:8000/`.
 
 ## Deployment
 
