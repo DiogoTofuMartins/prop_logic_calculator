@@ -23,7 +23,7 @@ These instructions will get you a copy of the project up and running on your loc
 1. **Clone the repository:**
 
     ```sh
-    git clone https://github.com/yourusername/prop-logic-evaluator.git
+    git clone git@github.com:DiogoTofuMartins/prop_logic_calculator.git
     cd prop-logic-evaluator
     ```
 
